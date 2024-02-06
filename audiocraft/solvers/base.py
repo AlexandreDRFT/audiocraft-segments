@@ -535,6 +535,7 @@ class StandardSolver(ABC, flashy.BaseSolver):
 
         with self.profiler, self.deadlock_detect:  # profiler will only run for the first 20 updates.
             for idx, batch in enumerate(lp):
+                print(f"Batch {idx}/{updates_per_epoch}")
                 self.deadlock_detect.update('batch')
                 if idx >= updates_per_epoch:
                     break

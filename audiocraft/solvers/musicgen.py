@@ -259,12 +259,6 @@ class MusicGenSolver(base.StandardSolver):
                 with B the batch size, K the number of codebooks, T_s the token timesteps.
             Padding mask (torch.Tensor): Mask with valid positions in the tokens tensor, of shape [B, K, T_s].
         """
-        if self.model.training:
-            warnings.warn(
-                "Up to version 1.0.1, the _prepare_tokens_and_attributes was evaluated with `torch.no_grad()`. "
-                "This is inconsistent with how model were trained in the MusicGen paper. We removed the "
-                "`torch.no_grad()` in version 1.1.0. Small changes to the final performance are expected. "
-                "Really sorry about that.")
         if self._cached_batch_loader is None or self.current_stage != "train":
             audio, infos = batch
             audio = audio.to(self.device)

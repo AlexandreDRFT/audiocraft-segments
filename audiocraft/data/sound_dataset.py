@@ -132,12 +132,21 @@ class SoundDataset(InfoAudioDataset):
         Else, such JSON will be searched for in an external json source folder if it exists.
         """
         info_path = Path(path).with_suffix('.json')
-        if Path(info_path).exists():
-            return info_path
-        elif self.external_metadata_source and (Path(self.external_metadata_source) / info_path.name).exists():
-            return Path(self.external_metadata_source) / info_path.name
-        else:
-            raise Exception(f"Unable to find a metadata JSON for path: {path}")
+        if info_path.exists():
+            return info_path        
+        elif self.external_metadata_source:
+            # Construct the external info path by inserting 'metadata' at the correct location
+            parts = Path(path).parts
+            # Find the index where 'data' is in the path
+            data_index = parts.index('data')
+            # Construct the external path with 'metadata' inserted after 'audiocraft'
+            external_parts = parts[:data_index] + (self.external_metadata_source,) + parts[data_index:]
+            external_info_path = Path(*external_parts).with_suffix('.json')
+
+            if external_info_path.exists():
+                return external_info_path
+                
+        raise Exception(f"Unable to find a metadata JSON for path: {path}, fetched info path: {info_path}, external info path: {external_info_path}")
 
     def __getitem__(self, index):
         wav, info = super().__getitem__(index)

@@ -37,6 +37,15 @@ wheels/
 # docs
 /api_docs
 
+# data
+/data
+!audiocraft/data
+output
+demos
+metadata
+data_table.tsv
+command
+
 # dotenv
 .env
 .envrc
@@ -48,10 +57,8 @@ ENV/
 
 # egs with manifest files
 egs/*
-!egs/example
 # local datasets
 dataset/*
-!dataset/example
 
 # personal notebooks & scripts
 */local_scripts

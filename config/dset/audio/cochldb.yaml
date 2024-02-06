@@ -1,0 +1,10 @@
+# @package __global__
+
+datasource:
+  max_sample_rate: 32000
+  max_channels: 2
+
+  train: egs/cochldb/train
+  valid: egs/cochldb/validation
+  evaluate: egs/cochldb/test_internal
+  generate: egs/cochldb/test_internal

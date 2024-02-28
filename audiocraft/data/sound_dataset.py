@@ -127,27 +127,24 @@ class SoundDataset(InfoAudioDataset):
         self.mix_min_overlap = mix_min_overlap
 
     def _get_info_path(self, path: tp.Union[str, Path]) -> Path:
-        """Get path of JSON with metadata (description, etc.).
-        If there exists a JSON with the same name as 'path.name', then it will be used.
-        Else, such JSON will be searched for in an external json source folder if it exists.
         """
-        info_path = Path(path).with_suffix('.json')
-        if info_path.exists():
-            return info_path        
-        elif self.external_metadata_source:
-            # Construct the external info path by inserting 'metadata' at the correct location
-            parts = Path(path).parts
-            # Find the index where 'data' is in the path
-            data_index = parts.index('data')
-            # Construct the external path with 'metadata' inserted after 'audiocraft'
-            external_parts = parts[:data_index] + (self.external_metadata_source,) + parts[data_index:]
-            external_info_path = Path(*external_parts).with_suffix('.json')
+        Get path of JSON with metadata (description, etc.).
+        If there exists a JSON with the same name as 'path.stem' in the './metadata' directory, it will be used.
+        """
+        # Convert path to Path object if it's not already one
+        path = Path(path)
+        # Define the metadata directory path
+        metadata_dir = Path('/home/audiogen_project/training/audiocraft/metadata')
+        # Construct the metadata file name
+        metadata_file_name = path.stem + '.json'
+        # Construct the full path to the metadata file
+        metadata_path = metadata_dir / metadata_file_name
 
-            if external_info_path.exists():
-                return external_info_path
-                
-        raise Exception(f"Unable to find a metadata JSON for path: {path}, fetched info path: {info_path}, external info path: {external_info_path}")
+        if metadata_path.exists():
+            return metadata_path
 
+        raise Exception(f"Unable to find a metadata JSON for path: {path}, attempted metadata path: {metadata_path}")
+          
     def __getitem__(self, index):
         wav, info = super().__getitem__(index)
         info_data = info.to_dict()
